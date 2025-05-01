@@ -54,6 +54,15 @@ class Tree {
       throw new Error("This function requires the callback parameter");
   }
 
+  #rootToLeaf(root, height = -1) {
+    if (!root) return height;
+
+    const left = this.#rootToLeaf(root.left, height++);
+    const right = this.#rootToLeaf(root.right, height++);
+
+    return Math.max(left, right);
+  }
+
   insert(value, root = this.root) {
     if (root === null) return new Node(value);
 
@@ -141,16 +150,7 @@ class Tree {
     let root = this.find(value);
     if (!root) return;
 
-    const rootToLeafHeight = (root, height = -1) => {
-      if (!root) return height;
-
-      const left = rootToLeafHeight(root.left, height++);
-      const right = rootToLeafHeight(root.right, height++);
-
-      return Math.max(left, right);
-    };
-
-    return rootToLeafHeight(root);
+    return rootToLeaf(root);
   }
 
   depth(value) {
@@ -168,7 +168,12 @@ class Tree {
     return null;
   }
 
-  isBalanced() {}
+  isBalanced() {
+    let left = this.#rootToLeaf(this.root.left, 1);
+    let right = this.#rootToLeaf(this.root.right, 1);
+
+    return Math.abs(left - right) <= 1;
+  }
 
   rebalance() {}
 }
@@ -189,6 +194,5 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 // Sorted Array: [ 1, 3, 4, 5, 7, 8, 9, 23, 67, 324, 6345 ]
 let array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const tree = new Tree(array);
-console.log(tree.height(6345));
-// tree.levelOrder((node) => console.log(node.data));
+console.log(tree.isBalanced());
 prettyPrint(tree.root);
