@@ -175,7 +175,12 @@ class Tree {
     return Math.abs(left - right) <= 1;
   }
 
-  rebalance() {}
+  rebalance() {
+    let array = [];
+    this.inOrder((root) => array.push(root.data));
+
+    this.root = this.#buildTree(array);
+  }
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -190,9 +195,3 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
     prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
   }
 };
-
-// Sorted Array: [ 1, 3, 4, 5, 7, 8, 9, 23, 67, 324, 6345 ]
-let array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
-const tree = new Tree(array);
-console.log(tree.isBalanced());
-prettyPrint(tree.root);
